@@ -17,7 +17,7 @@ epsilon = 0
 EPS_DECAY = 0.9998  # Every episode will be epsilon*EPS_DECAY
 SHOW_EVERY = 0  # how often to play through env visually.
 
-start_q_table ='qtable-1576163979-ttc-500000-new.pickle' # None or Filename
+start_q_table ='qtable/qtable-1576227243-ttc-500000-new.pickle' # None or Filename
 
 LEARNING_RATE = 0.1
 DISCOUNT = 0.99
@@ -53,22 +53,9 @@ def action(choice):
     elif choice == 8:
         return(2, 2)
 
-if start_q_table is None:
-    # initialize the q-table#
-    q_table = {}
-    for x in range(-1, 2):
-        for xx in range(-1, 2):
-            for xxx in range(-1, 2):
-                for xxxx in range(-1, 2):
-                    for xxxxx in range(-1, 2):
-                        for xxxxxx in range(-1, 2):
-                            for xxxxxxx in range(-1, 2):
-                                for xxxxxxxx in range(-1, 2):
-                                    for xxxxxxxxx in range(-1, 2):
-                                        q_table[(x, xx, xxx,xxxx, xxxxx, xxxxxx,xxxxxxx, xxxxxxxx, xxxxxxxxx)] = [np.random.uniform(-5, 0) for x in range(9)]
-else:
-    with open(start_q_table, "rb") as f:
-        q_table = pickle.load(f)
+
+with open(start_q_table, "rb") as f:
+    q_table = pickle.load(f)
 
 episode_rewards = []
 
@@ -77,9 +64,11 @@ for episode in range(HM_EPISODES):
     won_o = False
     lose_o = False
     episode_reward = 0
+    turn = 0
     for i in range(9):
+        turn += 1
         obs = tuple(board)
-        if np.random.random() > epsilon:
+        if np.random.random() > epsilon and turn >1:
             # GET THE ACTION
             action = np.argmax(q_table[obs])
         else:
